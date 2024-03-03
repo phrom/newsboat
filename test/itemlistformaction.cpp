@@ -107,7 +107,7 @@ TEST_CASE("OP_PURGE_DELETED purges previously deleted items",
 }
 
 TEST_CASE(
-	"OP_OPENBROWSER_AND_MARK and OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK pass the url to the browser and mark read",
+	"OP_OPENBROWSER_* operations pass the url to the browser. *_AND_MARK variants also mark it read."
 	"[ItemListFormAction]")
 {
 	ConfigPaths paths;
@@ -137,22 +137,36 @@ TEST_CASE(
 	ItemListFormAction itemlist(v, itemlist_str, &rsscache, filters, &cfg, rxman);
 	itemlist.set_feed(feed);
 
-	const std::vector<std::string> args;
+	Operation op;
+
+	SECTION("OP_OPENINBROWSER") {
+		op = OP_OPENINBROWSER;
+	}
+
+	SECTION("OP_OPENINBROWSER_NONINTERACTIVE") {
+		op = OP_OPENINBROWSER_NONINTERACTIVE;
+	}
 
 	SECTION("OP_OPENBROWSER_AND_MARK") {
-		itemlist.process_op(OP_OPENBROWSER_AND_MARK, args);
+		op = OP_OPENBROWSER_AND_MARK;
 	}
 
 	SECTION("OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK") {
-		itemlist.process_op(OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK, args);
+		op = OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK;
 	}
+
+	const std::vector<std::string> args;
+	itemlist.process_op(op, args);
 
 	std::ifstream browserFileStream(browserfile.get_path());
 
 	REQUIRE(std::getline(browserFileStream, line));
 	REQUIRE(line == test_url);
 
-	REQUIRE(feed->unread_item_count() == 0);
+	if (op == OP_OPENBROWSER_AND_MARK ||
+		op == OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK) {
+		REQUIRE(feed->unread_item_count() == 0);
+	}
 }
 
 TEST_CASE(
@@ -194,76 +208,6 @@ TEST_CASE(
 	}
 
 	REQUIRE(feed->unread_item_count() == 1);
-}
-
-TEST_CASE("OP_OPENINBROWSER passes the url to the browser",
-	"[ItemListFormAction]")
-{
-	ConfigPaths paths;
-	Controller c(paths);
-	newsboat::View v(&c);
-	test_helpers::TempFile browserfile;
-	const std::string test_url = "http://test_url";
-	std::string line;
-
-	ConfigContainer cfg;
-	cfg.set_configvalue("browser", "echo %u >> " + browserfile.get_path());
-
-	Cache rsscache(":memory:", &cfg);
-	FilterContainer filters;
-	RegexManager rxman;
-
-	std::shared_ptr<RssFeed> feed = std::make_shared<RssFeed>(&rsscache, "");
-	std::shared_ptr<RssItem> item = std::make_shared<RssItem>(&rsscache);
-	item->set_link(test_url);
-	feed->add_item(item);
-
-	v.set_config_container(&cfg);
-	c.set_view(&v);
-
-	ItemListFormAction itemlist(v, itemlist_str, &rsscache, filters, &cfg, rxman);
-	itemlist.set_feed(feed);
-	const std::vector<std::string> args;
-	itemlist.process_op(OP_OPENINBROWSER, args);
-	std::ifstream browserFileStream(browserfile.get_path());
-
-	REQUIRE(std::getline(browserFileStream, line));
-	REQUIRE(line == test_url);
-}
-
-TEST_CASE("OP_OPENINBROWSER_NONINTERACTIVE passes the url to the browser",
-	"[ItemListFormAction]")
-{
-	ConfigPaths paths;
-	Controller c(paths);
-	newsboat::View v(&c);
-	test_helpers::TempFile browserfile;
-	const std::string test_url = "http://test_url";
-	std::string line;
-
-	ConfigContainer cfg;
-	cfg.set_configvalue("browser", "echo %u >> " + browserfile.get_path());
-
-	Cache rsscache(":memory:", &cfg);
-	FilterContainer filters;
-	RegexManager rxman;
-
-	std::shared_ptr<RssFeed> feed = std::make_shared<RssFeed>(&rsscache, "");
-	std::shared_ptr<RssItem> item = std::make_shared<RssItem>(&rsscache);
-	item->set_link(test_url);
-	feed->add_item(item);
-
-	v.set_config_container(&cfg);
-	c.set_view(&v);
-
-	ItemListFormAction itemlist(v, itemlist_str, &rsscache, filters, &cfg, rxman);
-	itemlist.set_feed(feed);
-	const std::vector<std::string> args;
-	itemlist.process_op(newsboat::OP_OPENINBROWSER_NONINTERACTIVE, args);
-	std::ifstream browserFileStream(browserfile.get_path());
-
-	REQUIRE(std::getline(browserFileStream, line));
-	REQUIRE(line == test_url);
 }
 
 TEST_CASE("OP_OPENALLUNREADINBROWSER passes the url list to the browser",
