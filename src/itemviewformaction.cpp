@@ -233,7 +233,8 @@ bool ItemViewFormAction::process_operation(Operation op,
 		return open_link_in_browser(item->link(), "article", item->title(), interactive);
 	}
 	break;
-	case OP_OPENINBROWSER_NONINTERACTIVE: {
+	case OP_OPENINBROWSER_NONINTERACTIVE:
+	case OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK: {
 		LOG(Level::INFO, "ItemViewFormAction::process_operation: starting browser");
 		const bool interactive = false;
 		return open_link_in_browser(item->link(), "article", item->title(), interactive);

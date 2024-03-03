@@ -180,6 +180,13 @@ static const std::vector<OpDesc> opdescs = {
 		KM_FEEDLIST | KM_ARTICLELIST | KM_SEARCHRESULTSLIST | KM_ARTICLE | KM_URLVIEW
 	},
 	{
+		OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK,
+		"open-in-browser-noninteractively-and-mark-read",
+		KeyCombination(""),
+		translatable("Open URL of article, or entry in URL view, non-interactively. Mark read"),
+		KM_ARTICLELIST | KM_SEARCHRESULTSLIST | KM_ARTICLE | KM_URLVIEW
+	},
+	{
 		OP_HELP,
 		"help",
 		KeyCombination("?"),
