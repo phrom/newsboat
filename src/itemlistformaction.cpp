@@ -135,8 +135,9 @@ bool ItemListFormAction::process_operation(Operation op,
 		invalidate_list();
 	}
 	break;
-	case OP_OPENBROWSER_AND_MARK: {
-		const bool interactive = true;
+	case OP_OPENBROWSER_AND_MARK:
+	case OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK: {
+		const bool interactive = op == OP_OPENBROWSER_AND_MARK;
 		invalidate(itempos);
 		if (!open_position_in_browser(itempos, interactive)) {
 			return false;

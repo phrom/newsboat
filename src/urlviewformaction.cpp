@@ -49,7 +49,8 @@ bool UrlViewFormAction::process_operation(Operation op,
 		open_current_position_in_browser(interactive);
 	}
 	break;
-	case OP_OPENINBROWSER_NONINTERACTIVE: {
+	case OP_OPENINBROWSER_NONINTERACTIVE:
+	case OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK: {
 		const bool interactive = false;
 		open_current_position_in_browser(interactive);
 	}

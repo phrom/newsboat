@@ -107,7 +107,7 @@ TEST_CASE("OP_PURGE_DELETED purges previously deleted items",
 }
 
 TEST_CASE(
-	"OP_OPENBROWSER_AND_MARK passes the url to the browser and marks read",
+	"OP_OPENBROWSER_AND_MARK and OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK pass the url to the browser and mark read",
 	"[ItemListFormAction]")
 {
 	ConfigPaths paths;
@@ -136,8 +136,17 @@ TEST_CASE(
 
 	ItemListFormAction itemlist(v, itemlist_str, &rsscache, filters, &cfg, rxman);
 	itemlist.set_feed(feed);
+
 	const std::vector<std::string> args;
-	itemlist.process_op(OP_OPENBROWSER_AND_MARK, args);
+
+	SECTION("OP_OPENBROWSER_AND_MARK") {
+		itemlist.process_op(OP_OPENBROWSER_AND_MARK, args);
+	}
+
+	SECTION("OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK") {
+		itemlist.process_op(OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK, args);
+	}
+
 	std::ifstream browserFileStream(browserfile.get_path());
 
 	REQUIRE(std::getline(browserFileStream, line));
@@ -147,7 +156,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-	"OP_OPENBROWSER_AND_MARK does not mark read when browser fails",
+	"OP_OPENBROWSER_AND_MARK and OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK do not mark read when browser fails",
 	"[ItemListFormAction]")
 {
 	ConfigPaths paths;
@@ -175,7 +184,14 @@ TEST_CASE(
 	ItemListFormAction itemlist(v, itemlist_str, &rsscache, filters, &cfg, rxman);
 	itemlist.set_feed(feed);
 	const std::vector<std::string> args;
-	itemlist.process_op(OP_OPENBROWSER_AND_MARK, args);
+
+	SECTION("OP_OPENBROWSER_AND_MARK") {
+		itemlist.process_op(OP_OPENBROWSER_AND_MARK, args);
+	}
+
+	SECTION("OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK") {
+		itemlist.process_op(OP_OPENINBROWSER_NONINTERACTIVE_AND_MARK, args);
+	}
 
 	REQUIRE(feed->unread_item_count() == 1);
 }
