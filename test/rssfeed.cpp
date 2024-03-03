@@ -208,6 +208,46 @@ TEST_CASE("RssFeed::sort() correctly sorts articles", "[RssFeed]")
 		REQUIRE(articles[3]->pubDate_timestamp() == 23);
 		REQUIRE(articles[4]->pubDate_timestamp() == 7);
 	}
+
+	SECTION("feed") {
+		auto make_feed = [&](std::string title) {
+			auto f = std::make_shared<RssFeed>(&rsscache, title);
+			f->set_title(title);
+			return f;
+		};
+		auto tech = make_feed("TechTrends Daily");
+		auto world = make_feed("World News Digest");
+		auto culinary = make_feed("Culinary Chronicles");
+		auto fitness = make_feed("Fitness Focus Weekly");
+		auto creative = make_feed("Creative Inspiration Hub");
+
+		auto articles = f.items();
+		articles[0]->set_feedptr(tech);
+		articles[1]->set_feedptr(world);
+		articles[2]->set_feedptr(culinary);
+		articles[3]->set_feedptr(fitness);
+		articles[4]->set_feedptr(creative);
+
+		ArticleSortStrategy ss;
+		ss.sm = ArtSortMethod::FEED;
+		ss.sd = SortDirection::DESC;
+		f.sort(ss);
+		articles = f.items();
+		REQUIRE(articles[0]->attribute_value("feedtitle") == world->title());
+		REQUIRE(articles[1]->attribute_value("feedtitle") == tech->title());
+		REQUIRE(articles[2]->attribute_value("feedtitle") == fitness->title());
+		REQUIRE(articles[3]->attribute_value("feedtitle") == culinary->title());
+		REQUIRE(articles[4]->attribute_value("feedtitle") == creative->title());
+
+		ss.sd = SortDirection::ASC;
+		f.sort(ss);
+		articles = f.items();
+		REQUIRE(articles[0]->attribute_value("feedtitle") == creative->title());
+		REQUIRE(articles[1]->attribute_value("feedtitle") == culinary->title());
+		REQUIRE(articles[2]->attribute_value("feedtitle") == fitness->title());
+		REQUIRE(articles[3]->attribute_value("feedtitle") == tech->title());
+		REQUIRE(articles[4]->attribute_value("feedtitle") == world->title());
+	}
 }
 
 TEST_CASE("RssFeed::unread_item_count() returns number of unread articles",
