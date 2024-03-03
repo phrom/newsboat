@@ -335,6 +335,17 @@ void RssFeed::sort_unlocked(const ArticleSortStrategy& sort_strategy)
 					b->pubDate_timestamp());
 		});
 		break;
+	case ArtSortMethod::FEED:
+		std::stable_sort(items_.begin(),
+			items_.end(),
+			[&](const std::shared_ptr<RssItem>& a,
+		const std::shared_ptr<RssItem>& b) {
+			return sort_strategy.sd ==
+				SortDirection::DESC
+				? (a->attribute_value("feedtitle") > b->attribute_value("feedtitle"))
+				: (a->attribute_value("feedtitle") < b->attribute_value("feedtitle"));
+		});
+		break;
 	case ArtSortMethod::RANDOM:
 		std::random_device rd;
 		std::default_random_engine rng(rd());

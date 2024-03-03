@@ -612,6 +612,8 @@ ArticleSortStrategy ConfigContainer::get_article_sort_strategy() const
 			ss.sm = ArtSortMethod::GUID;
 		} else if (methods[0] == "random") {
 			ss.sm = ArtSortMethod::RANDOM;
+		} else if (methods[0] == "feed") {
+			ss.sm = ArtSortMethod::FEED;
 		}
 	}
 

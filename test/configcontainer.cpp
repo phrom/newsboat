@@ -655,6 +655,23 @@ TEST_CASE(
 		REQUIRE(sort_strategy.sm == ArtSortMethod::RANDOM);
 		REQUIRE(sort_strategy.sd == SortDirection::DESC);
 	}
+
+	SECTION("feed") {
+		cfg.set_configvalue("article-sort-order", "feed");
+		sort_strategy = cfg.get_article_sort_strategy();
+		REQUIRE(sort_strategy.sm == ArtSortMethod::FEED);
+		REQUIRE(sort_strategy.sd == SortDirection::ASC);
+
+		cfg.set_configvalue("article-sort-order", "feed-asc");
+		sort_strategy = cfg.get_article_sort_strategy();
+		REQUIRE(sort_strategy.sm == ArtSortMethod::FEED);
+		REQUIRE(sort_strategy.sd == SortDirection::ASC);
+
+		cfg.set_configvalue("article-sort-order", "feed-desc");
+		sort_strategy = cfg.get_article_sort_strategy();
+		REQUIRE(sort_strategy.sm == ArtSortMethod::FEED);
+		REQUIRE(sort_strategy.sd == SortDirection::DESC);
+	}
 }
 
 TEST_CASE("get_article_sort_strategy() returns \"date\" method "

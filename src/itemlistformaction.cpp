@@ -759,10 +759,10 @@ bool ItemListFormAction::process_operation(Operation op,
 		// i18n: This string is related to the letters in parentheses in the
 		// "Sort by (d)ate/..." and "Reverse Sort by (d)ate/..."
 		// messages
-		std::string input_options = _("dtfalgr");
+		std::string input_options = _("dtfalgre");
 		char c = v.confirm(
 				_("Sort by "
-					"(d)ate/(t)itle/(f)lags/(a)uthor/(l)ink/(g)uid/(r)andom?"),
+					"(d)ate/(t)itle/(f)lags/(a)uthor/(l)ink/(g)uid/(r)andom/f(e)ed?"),
 				input_options);
 		if (!c) {
 			break;
@@ -773,7 +773,7 @@ bool ItemListFormAction::process_operation(Operation op,
 		// That'll prevent this function from sorting anything, so users will
 		// complain, and we'll ask them to update the translation. A bit lame,
 		// but it's better than mishandling the answer.
-		const auto n_options = ((std::string) "dtfalgr").length();
+		const auto n_options = ((std::string) "dtfalgre").length();
 		if (input_options.length() < n_options) {
 			break;
 		}
@@ -793,14 +793,16 @@ bool ItemListFormAction::process_operation(Operation op,
 			cfg->set_configvalue("article-sort-order", "guid-asc");
 		} else if (c == input_options.at(6)) {
 			cfg->set_configvalue("article-sort-order", "random");
+		} else if (c == input_options.at(7)) {
+			cfg->set_configvalue("article-sort-order", "feed");
 		}
 	}
 	break;
 	case OP_REVSORT: {
-		std::string input_options = _("dtfalgr");
+		std::string input_options = _("dtfalgre");
 		char c = v.confirm(
 				_("Reverse Sort by "
-					"(d)ate/(t)itle/(f)lags/(a)uthor/(l)ink/(g)uid/(r)andom?"),
+					"(d)ate/(t)itle/(f)lags/(a)uthor/(l)ink/(g)uid/(r)andom/f(e)ed?"),
 				input_options);
 		if (!c) {
 			break;
@@ -811,7 +813,7 @@ bool ItemListFormAction::process_operation(Operation op,
 		// That'll prevent this function from sorting anything, so users will
 		// complain, and we'll ask them to update the translation. A bit lame,
 		// but it's better than mishandling the answer.
-		const auto n_options = ((std::string) "dtfalgr").length();
+		const auto n_options = ((std::string) "dtfalgre").length();
 		if (input_options.length() < n_options) {
 			break;
 		}
@@ -833,6 +835,8 @@ bool ItemListFormAction::process_operation(Operation op,
 			cfg->set_configvalue("article-sort-order", "guid-desc");
 		} else if (c == input_options.at(6)) {
 			cfg->set_configvalue("article-sort-order", "random");
+		} else if (c == input_options.at(7)) {
+			cfg->set_configvalue("article-sort-order", "feed");
 		}
 	}
 	break;
